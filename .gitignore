@@ -1,0 +1,5 @@
+/.idea
+**/.DS_STORE
+**/__pycache__
+/django_store_site/.env
+/db.sqlite3
