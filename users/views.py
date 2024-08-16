@@ -1,5 +1,5 @@
 from django.shortcuts import render, HttpResponseRedirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.urls import reverse
 
@@ -63,3 +63,8 @@ def profile_user(request):
         'form': form
     }
     return render(request, 'users/profile.html', context=context)
+
+
+def logout_user(request):
+    logout(request)
+    return HttpResponseRedirect(reverse('products:index'))
