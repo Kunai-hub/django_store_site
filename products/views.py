@@ -7,7 +7,6 @@ def index(request):
     context = {
         'title': 'Store',
     }
-
     return render(request, 'products/index.html', context=context)
 
 
@@ -19,7 +18,6 @@ def products(request):
         'products': products,
         'categories': categories,
     }
-
     return render(request, 'products/products.html', context=context)
 
 
@@ -33,4 +31,10 @@ def basket_add(request, product_id):
         basket.save()
     else:
         Basket.objects.create(user=request.user, product=product, quantity=1)
+    return HttpResponseRedirect(request.META['HTTP_REFERER'])
+
+
+def basket_remove(request, basket_id):
+    basket = Basket.objects.get(id=basket_id)
+    basket.delete()
     return HttpResponseRedirect(request.META['HTTP_REFERER'])
