@@ -2,32 +2,21 @@ from django.shortcuts import render, HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse, reverse_lazy
 from django.views.generic.edit import CreateView, UpdateView
+from django.contrib.auth.views import LoginView
 
 from users.forms import LoginForm, RegistrationForm, ProfileForm
 from products.models import Basket
 from users.models import User
 
 
-def login_user(request):
+class LoginUserView(LoginView):
+    template_name = 'users/login.html'
+    form_class = LoginForm
 
-    if request.method == 'POST':
-        form = LoginForm(data=request.POST)
-
-        if form.is_valid():
-            username = request.POST['username']
-            password = request.POST['password']
-            user = authenticate(username=username, password=password)
-
-            if user:
-                login(request, user)
-                return HttpResponseRedirect(reverse('products:index'))
-    else:
-        form = LoginForm()
-    context = {
-        'title': 'Store - Авторизация',
-        'form': form,
-    }
-    return render(request, 'users/login.html', context=context)
+    def get_context_data(self, **kwargs):
+        context = super(LoginUserView, self).get_context_data(**kwargs)
+        context['title'] = 'Store - Авторизация'
+        return context
 
 
 class RegistrationUserView(CreateView):
