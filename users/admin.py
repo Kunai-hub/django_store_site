@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from users.models import User
+from users.models import User, EmailVerification
 from products.admin import BasketAdmin
 
 
@@ -13,3 +13,9 @@ class UserAdmin(admin.ModelAdmin):
     ordering = ('id',)
     inlines = (BasketAdmin,)
 
+
+@admin.register(EmailVerification)
+class EmailVerificationAdmin(admin.ModelAdmin):
+    list_display = ('user', 'code', 'expiration',)
+    fields = ('user', 'code', 'created_timestamp', 'expiration',)
+    readonly_fields = ('created_timestamp',)
