@@ -1,9 +1,7 @@
 from django.shortcuts import render, HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout
-from django.contrib import messages
 from django.urls import reverse, reverse_lazy
-from django.contrib.auth.decorators import login_required
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, UpdateView
 
 from users.forms import LoginForm, RegistrationForm, ProfileForm
 from products.models import Basket
@@ -44,25 +42,19 @@ class RegistrationUserView(CreateView):
         return context
 
 
-@login_required
-def profile_user(request):
+class ProfileUserView(UpdateView):
+    model = User
+    template_name = 'users/profile.html'
+    form_class = ProfileForm
 
-    if request.method == 'POST':
-        form = ProfileForm(data=request.POST, instance=request.user, files=request.FILES)
+    def get_success_url(self):
+        return reverse_lazy('users:profile', args=(self.request.user.id,))
 
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('users:profile'))
-        else:
-            print(form.errors)
-    else:
-        form = ProfileForm(instance=request.user)
-    context = {
-        'title': 'Store - Профиль',
-        'form': form,
-        'baskets': Basket.objects.filter(user=request.user)
-    }
-    return render(request, 'users/profile.html', context=context)
+    def get_context_data(self, **kwargs):
+        context = super(ProfileUserView, self).get_context_data(**kwargs)
+        context['title'] = 'Store - Профиль'
+        context['baskets'] = Basket.objects.filter(user=self.request.user)
+        return context
 
 
 def logout_user(request):
