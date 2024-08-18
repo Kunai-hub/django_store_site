@@ -1,6 +1,4 @@
-from django.shortcuts import render, HttpResponseRedirect
-from django.contrib.auth import authenticate, login, logout
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView, UpdateView
 from django.contrib.auth.views import LoginView
 
@@ -44,8 +42,3 @@ class ProfileUserView(UpdateView):
         context['title'] = 'Store - Профиль'
         context['baskets'] = Basket.objects.filter(user=self.request.user)
         return context
-
-
-def logout_user(request):
-    logout(request)
-    return HttpResponseRedirect(reverse('products:index'))
