@@ -1,7 +1,7 @@
 from django.urls import path
 
-from products.views import IndexView, ProductListView, basket_add, basket_remove
-
+from products.views import (IndexView, ProductListView, basket_add,
+                            basket_remove)
 
 app_name = 'products'
 
