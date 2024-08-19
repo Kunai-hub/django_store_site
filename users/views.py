@@ -35,11 +35,6 @@ class ProfileUserView(TitleMixin, UpdateView):
     def get_success_url(self):
         return reverse_lazy('users:profile', args=(self.request.user.id,))
 
-    def get_context_data(self, **kwargs):
-        context = super(ProfileUserView, self).get_context_data(**kwargs)
-        context['baskets'] = Basket.objects.filter(user=self.request.user)
-        return context
-
 
 class EmailVerificationView(TitleMixin, TemplateView):
     template_name = 'users/email_verification.html'
