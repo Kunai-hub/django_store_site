@@ -23,6 +23,12 @@ env = environ.Env(
     EMAIL_HOST_USER=(str),
     EMAIL_HOST_PASSWORD=(str),
     EMAIL_USE_SSL=(bool),
+
+    DATABASE_NAME=(str),
+    DATABASE_USER=(str),
+    DATABASE_PASSWORD=(str),
+    DATABASE_HOST=(str),
+    DATABASE_PORT=(str),
 )
 environ.Env.read_env()
 
@@ -94,9 +100,13 @@ WSGI_APPLICATION = 'django_store_site.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": env('DATABASE_NAME'),
+        "USER": env('DATABASE_USER'),
+        "PASSWORD": env('DATABASE_PASSWORD'),
+        "HOST": env('DATABASE_HOST'),
+        "PORT": env('DATABASE_PORT'),
     }
 }
 
