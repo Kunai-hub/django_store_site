@@ -6,7 +6,6 @@ from django.contrib.auth.views import LoginView
 from django.contrib.messages.views import SuccessMessageMixin
 
 from users.forms import LoginForm, RegistrationForm, ProfileForm
-from products.models import Basket
 from users.models import User, EmailVerification
 from general.views import TitleMixin
 
