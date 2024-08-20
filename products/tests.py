@@ -3,7 +3,7 @@ from http import HTTPStatus as status
 from django.test import TestCase
 from django.urls import reverse
 
-from products.models import Product
+from products.models import Product, ProductCategory
 
 
 class IndexViewTest(TestCase):
@@ -36,4 +36,16 @@ class ProductListViewTest(TestCase):
         self.assertEqual(
             list(response.context_data['object_list']),
             list(self.products[:3])
+        )
+
+    def test_product_list_view_with_category(self):
+        category = ProductCategory.objects.first()
+
+        path = reverse('products:products_category', kwargs={'category_id': category.id})
+        response = self.client.get(path)
+
+        self._general_tests(response=response)
+        self.assertEqual(
+            list(response.context_data['object_list']),
+            list(self.products.filter(category_id=category.id))
         )
