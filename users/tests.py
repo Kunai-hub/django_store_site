@@ -1,9 +1,11 @@
 from http import HTTPStatus as status
+from datetime import timedelta
 
 from django.test import TestCase
 from django.urls import reverse
+from django.utils.timezone import now
 
-from users.models import User
+from users.models import User, EmailVerification
 
 
 class RegistrationUserViewTest(TestCase):
@@ -35,3 +37,11 @@ class RegistrationUserViewTest(TestCase):
 
         self.assertEqual(response.status_code, status.FOUND)
         self.assertTrue(User.objects.filter(username=username).exists())
+
+        email_verification = EmailVerification.objects.filter(user__username=username)
+
+        self.assertTrue(email_verification.exists())
+        self.assertEqual(
+            email_verification.first().expiration.date(),
+            (now() + timedelta(hours=48)).date()
+        )
