@@ -1,5 +1,5 @@
 {% extends 'products/base.html' %}
-{% load static %}
+{% load static cache %}
 
 {% block css %}
     <link href="{% static 'vendor/css/products.css' %}" rel="stylesheet">
@@ -14,6 +14,7 @@
     
                 <h1 class="my-4">Store</h1>
                 <div class="list-group">
+                
                     {% for category in categories %}
                         
                     	<a href="{% url 'products:products_category' category.id %}"
@@ -56,35 +57,41 @@
                 </div>
     
                 <div class="row">
+                
+                    {% cache 30 object_list %}
     
-                    {% for product in object_list %}
-                        
-                        <div class="col-lg-4 col-md-6 mb-4">
-                            <div class="card h-100">
-                                <a href="#">
-                                    <img class="card-img-top"
-                                         src="{{ product.image.url }}"
-                                         alt="">
-                                </a>
-                                <div class="card-body">
-                                    <h4 class="card-title">
-                                        <a href="#">{{ product.name }}</a>
-                                    </h4>
-                                    <h5>{{ product.price}} руб.</h5>
-                                    <p class="card-text">{{ product.description }}</p>
-                                </div>
-                                <div class="card-footer text-center">
-                                    <a class="btn btn-outline-success" href="{% url 'products:basket_add' product.id %}">
-                                        Отправить в корзину
+                        {% for product in object_list %}
+                            
+                            <div class="col-lg-4 col-md-6 mb-4">
+                                <div class="card h-100">
+                                    <a href="#">
+                                        <img class="card-img-top"
+                                             src="{{ product.image.url }}"
+                                             alt="">
                                     </a>
+                                    <div class="card-body">
+                                        <h4 class="card-title">
+                                            <a href="#">{{ product.name }}</a>
+                                        </h4>
+                                        <h5>{{ product.price}} руб.</h5>
+                                        <p class="card-text">{{ product.description }}</p>
+                                    </div>
+                                    <div class="card-footer text-center">
+                                        <a class="btn btn-outline-success" href="{% url 'products:basket_add' product.id %}">
+                                            Отправить в корзину
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        
-                    {% endfor %}
+                            
+                        {% endfor %}
+                
+                    {% endcache %}
                 
                 </div>
+            
                 {% if is_paginated %}
+                    
                     <nav aria-label="Page navigation example">
                         <ul class="pagination justify-content-center">
                             <li class="page-item {% if not page_obj.has_previous %} disabled {% endif %}">
@@ -94,13 +101,17 @@
                                     Предыдущая
                                 </a>
                             </li>
+                        
                             {% for page in page_obj.paginator.page_range %}
+                                
                                 <li class="page-item">
                                     <a class="page-link"
                                        href="{% url 'products:products_page' page %}">{{ page }}
                                     </a>
                                 </li>
+                                
                             {% endfor %}
+                        
                             <li class="page-item {% if not page_obj.has_next %} disabled {% endif %}">
                                 <a class="page-link" href="{% if page_obj.has_next %} {% url 'products:products_page' page_obj.next_page_number %} {% else %} # {% endif %}">
                                     Следующая
@@ -108,7 +119,9 @@
                             </li>
                         </ul>
                     </nav>
+                    
                 {% endif %} 
+            
             </div>
     
         </div>
