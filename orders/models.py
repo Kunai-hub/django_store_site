@@ -1,3 +1,28 @@
 from django.db import models
 
-# Create your models here.
+from users.models import User
+
+
+class Order(models.Model):
+    CREATED = 0
+    PAID = 1
+    ON_WAY = 2
+    DELIVERED = 3
+    STATUS_CHOICES = (
+        (CREATED, 'Создан'),
+        (PAID, 'Оплачен'),
+        (DELIVERED, 'В пути'),
+        (DELIVERED, 'Доставлен')
+    )
+
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    email = models.EmailField(max_length=200)
+    address = models.CharField(max_length=200)
+    basket_history = models.JSONField(default=dict)
+    created_timestamp = models.DateTimeField(auto_now_add=True)
+    status = models.SmallIntegerField(default=CREATED, choices=STATUS_CHOICES)
+    buyer = models.ForeignKey(to=User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'Заказ #{self.id}. {self.first_name} {self.last_name}'
