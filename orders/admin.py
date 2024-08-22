@@ -10,5 +10,5 @@ class OrderAdmin(admin.ModelAdmin):
               ('first_name', 'last_name'),
               ('email', 'address'),
               'basket_history', 'status', 'buyer'
-    )
+              )
     readonly_fields = ('id', 'created_timestamp',)
