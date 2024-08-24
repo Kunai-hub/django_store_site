@@ -7,6 +7,7 @@ from django.urls import reverse, reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView
+from django.views.generic.list import ListView
 
 from general.views import TitleMixin
 from orders.forms import OrderForm
@@ -78,3 +79,14 @@ def fulfill_checkout(session):
     order_id = int(session.metadata.order_id)
     order = Order.objects.get(id=order_id)
     order.update_after_payment()
+
+
+class OrderListView(TitleMixin, ListView):
+    template_name = 'orders/user_orders.html'
+    title = 'Store - Заказы'
+    queryset = Order.objects.all()
+    ordering = ('-created_timestamp',)
+
+    def get_queryset(self):
+        queryset = super(OrderListView, self).get_queryset()
+        return queryset.filter(buyer=self.request.user)

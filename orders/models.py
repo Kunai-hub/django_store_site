@@ -12,7 +12,7 @@ class Order(models.Model):
     STATUS_CHOICES = (
         (CREATED, 'Создан'),
         (PAID, 'Оплачен'),
-        (DELIVERED, 'В пути'),
+        (ON_WAY, 'В пути'),
         (DELIVERED, 'Доставлен')
     )
 
