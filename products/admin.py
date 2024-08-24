@@ -13,7 +13,7 @@ class ProductCategoryAdmin(admin.ModelAdmin):
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('name', 'price', 'quantity', 'category')
-    fields = ('name', 'description', 'image', ('price', 'quantity'), 'category')
+    fields = ('name', 'description', 'image', ('price', 'quantity'), 'category', 'stripe_product_price')
     search_fields = ('name',)
     readonly_fields = ('description',)
     ordering = ('name',)
