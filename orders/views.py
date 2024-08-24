@@ -1,8 +1,25 @@
-from django.urls import reverse_lazy
+from http import HTTPStatus as status
+
+import stripe
+from django.conf import settings
+from django.http import HttpResponseRedirect
+from django.urls import reverse, reverse_lazy
+from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView
 
 from general.views import TitleMixin
 from orders.forms import OrderForm
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
+
+
+class SuccessTemplateView(TitleMixin, TemplateView):
+    template_name = 'orders/order_success.html'
+    title = 'Store - Спасибо за заказ!'
+
+
+class CanceledTemplateView(TitleMixin, TemplateView):
+    template_name = 'orders/order_canceled.html'
 
 
 class OrderCreateView(TitleMixin, CreateView):
@@ -14,3 +31,18 @@ class OrderCreateView(TitleMixin, CreateView):
     def form_valid(self, form):
         form.instance.buyer = self.request.user
         return super(OrderCreateView, self).form_valid(form)
+
+    def post(self, request, *args, **kwargs):
+        super(OrderCreateView, self).post(request, *args, **kwargs)
+        checkout_session = stripe.checkout.Session.create(
+            line_items=[
+                {
+                    'price': 'price_1PrHAgP7GKXBDayUP28J9SUl',
+                    'quantity': 1,
+                },
+            ],
+            mode='payment',
+            success_url='{}{}'.format(settings.DOMAIN_NAME, reverse('orders:success')),
+            cancel_url='{}{}'.format(settings.DOMAIN_NAME, reverse('orders:canceled')),
+        )
+        return HttpResponseRedirect(checkout_session.url, status=status.SEE_OTHER)
